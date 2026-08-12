@@ -12,7 +12,10 @@ const options: swaggerJsdoc.Options = {
         "REST API for managing movies, showtimes, seat bookings, and customers.",
     },
     servers: [
-      { url: "http://localhost:3000", description: "Local development server" },
+      {
+        url: `http://localhost:${process.env.PORT}`,
+        description: "Local development server",
+      },
     ],
     tags: [
       {

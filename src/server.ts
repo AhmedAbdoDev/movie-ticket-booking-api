@@ -12,9 +12,9 @@ import authRouter from "./modules/auth/auth.route";
 app.use("/api/auth", authRouter);
 
 setupSwagger(app);
-
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
+const PORT = process.env.PORT;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 export default app;
