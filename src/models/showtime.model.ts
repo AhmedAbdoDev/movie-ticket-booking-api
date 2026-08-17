@@ -9,12 +9,22 @@ const Showtime = new Schema(
     },
     hallNumber: { type: Number, required: true },
     date: { type: Date, required: true },
-    startTime: { type: String, required: true, trim: true },
-    endTime: { type: String, required: true, trim: true },
+    startTime: {
+      type: Number,
+      required: true,
+      min: 0,
+      max: 1439,
+    },
+    endTime: {
+      type: Number,
+      required: true,
+      min: 0,
+      max: 1439,
+    },
     ticketPrice: { type: Number, required: true, min: 0 },
     totalCapacity: { type: Number, required: true, min: 1 },
   },
-  { versionKey: false },
+  { timestamps: true, versionKey: false },
 );
 
 export default model("showtime", Showtime);

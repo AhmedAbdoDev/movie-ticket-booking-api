@@ -27,7 +27,7 @@ const Booking = new Schema(
       required: true,
     },
   },
-  { versionKey: false },
+  { timestamps: true, versionKey: false },
 );
 
 export default model("booking", Booking);

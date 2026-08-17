@@ -10,8 +10,10 @@ app.use(express.json());
 connectDB();
 
 import authRouter from "./modules/auth/auth.route";
+import bookingRouter from "./modules/booking/booking.route";
 
 app.use("/api/auth", authRouter);
+app.use("/api/bookings", bookingRouter);
 
 setupSwagger(app);
 
