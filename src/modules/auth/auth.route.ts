@@ -1,18 +1,19 @@
 import { Router } from "express";
-import { testAuthController } from "./auth.controller";
-import { testAuthSchema } from "./auth.validation";
+import { loginController, meController, registerController } from "./auth.controller";
+import { loginSchema, registerSchema } from "./auth.validation";
 import validate from "../../middlewares/validate.middleware";
+import { authenticate } from "../../middlewares/auth.middleware";
 
-const router = Router();
+const router: ReturnType<typeof Router> = Router();
 
 /**
  * @swagger
- * /api/auth/test:
+ * /api/auth/register:
  *   post:
  *     tags:
  *       - Auth
- *     summary: Test authentication module
- *     description: Test endpoint to verify the Auth module structure, validation, controller, and service.
+ *     summary: Register a new customer or cinema admin
+ *     security: []
  *     requestBody:
  *       required: true
  *       content:
@@ -20,28 +21,82 @@ const router = Router();
  *           schema:
  *             type: object
  *             required:
- *               - name
+ *               - fullName
+ *               - email
+ *               - password
  *             properties:
- *               name:
+ *               fullName:
  *                 type: string
  *                 example: Ahmed
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: ahmed@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: StrongPass123
+ *               role:
+ *                 type: string
+ *                 enum: [CUSTOMER, CINEMA_ADMIN]
  *     responses:
- *       200:
- *         description: Auth module is working successfully
+ *       201:
+ *         description: Account created successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 message:
- *                   type: string
- *                   example: Auth module is working
- *                 name:
- *                   type: string
- *                   example: Ahmed
- *       400:
+ *       409:
+ *         description: Email already in use
+ *       422:
  *         description: Validation error
  */
-router.post("/test", validate(testAuthSchema), testAuthController);
+router.post("/register", validate(registerSchema), registerController);
+
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Log in and receive a JWT
+ *     security: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password]
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 format: password
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *       401:
+ *         description: Invalid credentials
+ */
+router.post("/login", validate(loginSchema), loginController);
+
+/**
+ * @swagger
+ * /api/auth/me:
+ *   get:
+ *     tags: [Auth]
+ *     summary: Get the authenticated user's identity and role
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Authenticated user details
+ *       401:
+ *         description: Missing, invalid, or expired token
+ */
+router.get("/me", authenticate, meController);
 
 export default router;
