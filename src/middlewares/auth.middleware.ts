@@ -1,15 +1,25 @@
 import { type NextFunction, type Request, type Response } from "express";
 import jwt from "jsonwebtoken";
 import AppError from "../error/AppError";
+import User from "../models/user.model";
 
 type UserRole = "CINEMA_ADMIN" | "CUSTOMER";
 const USER_ROLES: UserRole[] = ["CINEMA_ADMIN", "CUSTOMER"];
 
-export type AuthenticatedRequest = Request & {
-  user?: { id: string; role: UserRole };
+type AuthenticatedUser = {
+  id: string;
+  fullName: string;
+  email: string;
+  role: UserRole;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
-export const authenticate = (req: AuthenticatedRequest, _res: Response, next: NextFunction) => {
+export type AuthenticatedRequest = Request & {
+  user?: AuthenticatedUser;
+};
+
+export const authenticate = async (req: AuthenticatedRequest, _res: Response, next: NextFunction) => {
   const authorization = req.headers.authorization;
   if (!authorization?.startsWith("Bearer ")) {
     return next(new AppError("Authentication token is required", 401));
@@ -23,14 +33,25 @@ export const authenticate = (req: AuthenticatedRequest, _res: Response, next: Ne
     const payload = jwt.verify(token, secret);
     if (
       typeof payload === "string" ||
-      !payload.sub ||
-      !payload.role ||
-      !USER_ROLES.includes(payload.role as UserRole)
+      !payload.sub
     ) {
       return next(new AppError("Invalid authentication token", 401));
     }
 
-    req.user = { id: payload.sub, role: payload.role as UserRole };
+    const user = await User.findById(payload.sub).select("-password").lean();
+    if (!user) return next(new AppError("User associated with this token no longer exists", 401));
+    if (!USER_ROLES.includes(user.role as UserRole)) {
+      return next(new AppError("User has an invalid role", 401));
+    }
+
+    req.user = {
+      id: user._id.toString(),
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role as UserRole,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
     next();
   } catch {
     next(new AppError("Invalid or expired authentication token", 401));
