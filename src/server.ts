@@ -11,9 +11,11 @@ connectDB();
 
 import authRouter from "./modules/auth/auth.route";
 import bookingRouter from "./modules/booking/booking.route";
+import movieRouter from "./modules/movie/movie.route";
 
 app.use("/api/auth", authRouter);
 app.use("/api/bookings", bookingRouter);
+app.use("/api/movies", movieRouter); 
 
 setupSwagger(app);
 
