@@ -7,14 +7,14 @@ const Showtime = new Schema(
       ref: "movie",
       required: true,
     },
-    hallNumber: { 
+    hallNumber: {
       type: Number,
       required: true,
-      min: 1
+      min: 1,
     },
-    date: { 
-      type: Date, 
-      required: true
+    date: {
+      type: Date,
+      required: true,
     },
     startTime: {
       type: Number,
@@ -29,14 +29,14 @@ const Showtime = new Schema(
       max: 1439,
     },
     ticketPrice: {
-       type: Number, 
-       required: true,
-       min: 1
+      type: Number,
+      required: true,
+      min: 1,
     },
     totalCapacity: {
-       type: Number, 
-       required: true, 
-       min: 1
+      type: Number,
+      required: true,
+      min: 1,
     },
   },
   { timestamps: true, versionKey: false },

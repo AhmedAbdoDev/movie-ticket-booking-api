@@ -1,8 +1,15 @@
 import { Request, Response } from "express";
 
-import {createShowtime,getShowtimeById,getAllShowtimes,updateShowtime,deleteShowtime,getAvailableSeats} from "./showtime.service";
+import {
+  createShowtime,
+  getShowtimeById,
+  getAllShowtimes,
+  updateShowtime,
+  deleteShowtime,
+  getAvailableSeats,
+} from "./showtime.service";
 
-export const createShowtimeController = async (req: Request,res: Response) => {
+export const createShowtimeController = async (req: Request, res: Response) => {
   const result = await createShowtime(req.body);
 
   res.status(201).json({
@@ -12,7 +19,10 @@ export const createShowtimeController = async (req: Request,res: Response) => {
   });
 };
 
-export const getAllShowtimesController = async (req: Request,res: Response) => {
+export const getAllShowtimesController = async (
+  req: Request,
+  res: Response,
+) => {
   const result = await getAllShowtimes();
 
   res.status(200).json({
@@ -21,7 +31,10 @@ export const getAllShowtimesController = async (req: Request,res: Response) => {
   });
 };
 
-export const getShowtimeByIdController = async (req: Request,res: Response) => {
+export const getShowtimeByIdController = async (
+  req: Request,
+  res: Response,
+) => {
   const id = req.params.id as string;
   const result = await getShowtimeById(id);
 
@@ -31,7 +44,7 @@ export const getShowtimeByIdController = async (req: Request,res: Response) => {
   });
 };
 
-export const updateShowtimeController = async (req: Request,res: Response) => {
+export const updateShowtimeController = async (req: Request, res: Response) => {
   const id = req.params.id as string;
   const result = await updateShowtime(id, req.body);
 
@@ -42,7 +55,7 @@ export const updateShowtimeController = async (req: Request,res: Response) => {
   });
 };
 
-export const deleteShowtimeController = async (req: Request,res: Response) => {
+export const deleteShowtimeController = async (req: Request, res: Response) => {
   const id = req.params.id as string;
   const result = await deleteShowtime(id);
 
@@ -53,7 +66,10 @@ export const deleteShowtimeController = async (req: Request,res: Response) => {
   });
 };
 
-export const getAvailableSeatsController = async (req: Request,res: Response) => {
+export const getAvailableSeatsController = async (
+  req: Request,
+  res: Response,
+) => {
   const id = req.params.id as string;
   const result = await getAvailableSeats(id);
 

@@ -30,7 +30,12 @@ const createToken = (userId: string, role: UserRole) => {
   });
 };
 
-const userResponse = (user: { _id: { toString(): string }; fullName: string; email: string; role: UserRole }) => ({
+const userResponse = (user: {
+  _id: { toString(): string };
+  fullName: string;
+  email: string;
+  role: UserRole;
+}) => ({
   id: user._id.toString(),
   fullName: user.fullName,
   email: user.email,
@@ -39,7 +44,8 @@ const userResponse = (user: { _id: { toString(): string }; fullName: string; ema
 
 export const register = async (input: RegisterInput) => {
   const existingUser = await User.exists({ email: input.email });
-  if (existingUser) throw new AppError("An account with this email already exists", 409);
+  if (existingUser)
+    throw new AppError("An account with this email already exists", 409);
 
   const password = await bcrypt.hash(input.password, 12);
   const user = await User.create({
@@ -49,7 +55,10 @@ export const register = async (input: RegisterInput) => {
     role: input.role || "CUSTOMER",
   });
 
-  return { user: userResponse(user), token: createToken(user._id.toString(), user.role) };
+  return {
+    user: userResponse(user),
+    token: createToken(user._id.toString(), user.role),
+  };
 };
 
 export const login = async (input: LoginInput) => {
@@ -58,5 +67,8 @@ export const login = async (input: LoginInput) => {
     throw new AppError("Invalid email or password", 401);
   }
 
-  return { user: userResponse(user), token: createToken(user._id.toString(), user.role) };
+  return {
+    user: userResponse(user),
+    token: createToken(user._id.toString(), user.role),
+  };
 };

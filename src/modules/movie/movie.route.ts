@@ -1,6 +1,6 @@
 import { Router } from "express";
 import validate from "../../middlewares/validate.middleware";
-import { authenticate, cinemaAdminOnly } from "../../middlewares/auth.middleware";
+import { authenticate, authorize } from "../../middlewares/auth.middleware";
 
 import {
   createMovieSchema,
@@ -136,9 +136,9 @@ router.get("/:id", validate(movieIdParamsSchema), getMovieByIdController);
 router.post(
   "/",
   authenticate,
-  cinemaAdminOnly,
+  authorize("CINEMA_ADMIN"),
   validate(createMovieSchema),
-  createMovieController
+  createMovieController,
 );
 
 /**
@@ -174,9 +174,9 @@ router.post(
 router.patch(
   "/:id",
   authenticate,
-  cinemaAdminOnly,
+  authorize("CINEMA_ADMIN"),
   validate(updateMovieSchema),
-  updateMovieController
+  updateMovieController,
 );
 
 /**
@@ -204,9 +204,9 @@ router.patch(
 router.delete(
   "/:id",
   authenticate,
-  cinemaAdminOnly,
+  authorize("CINEMA_ADMIN"),
   validate(movieIdParamsSchema),
-  deleteMovieController
+  deleteMovieController,
 );
 
 export default router;

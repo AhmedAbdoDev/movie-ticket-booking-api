@@ -20,7 +20,7 @@ export const registerSchema = z.object({
     role: z.enum(["CINEMA_ADMIN", "CUSTOMER"]).optional(),
   }),
 });
-   
+
 export const loginSchema = z.object({
   body: z.object({
     email: z.email("A valid email address is required").trim().toLowerCase(),

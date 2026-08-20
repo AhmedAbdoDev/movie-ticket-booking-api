@@ -1,13 +1,24 @@
 import { Router } from "express";
 import validate from "../../middlewares/validate.middleware";
-import {authenticate, authorize} from "../../middlewares/auth.middleware";    
-import {createShowtimeSchema,getShowtimeByIdSchema,updateShowtimeSchema,deleteShowtimeSchema,getAllShowtimesSchema,} from "./showtime.validation";
-import {createShowtimeController,getShowtimeByIdController,updateShowtimeController,deleteShowtimeController,getAllShowtimesController,getAvailableSeatsController} from "./showtime.controller";
-
+import { authenticate, authorize } from "../../middlewares/auth.middleware";
+import {
+  createShowtimeSchema,
+  getShowtimeByIdSchema,
+  updateShowtimeSchema,
+  deleteShowtimeSchema,
+  getAllShowtimesSchema,
+  getSeatsSchema,
+} from "./showtime.validation";
+import {
+  createShowtimeController,
+  getShowtimeByIdController,
+  updateShowtimeController,
+  deleteShowtimeController,
+  getAllShowtimesController,
+  getAvailableSeatsController,
+} from "./showtime.controller";
 
 const router = Router();
-
-
 
 /**
  * @swagger
@@ -66,15 +77,16 @@ const router = Router();
 /**
  * @swagger
  * tags:
- *   - name: Showtime
+ *   - name: Showtimes
  *     description: Showtime management
  */
-
 
 /**
  * @swagger
  * /api/showtimes:
  *   post:
+ *     tags:
+ *       - Showtimes
  *     summary: Create a new showtime
  *     requestBody:
  *       required: true
@@ -92,17 +104,25 @@ const router = Router();
  *       409:
  *         description: Showtime conflict in the same hall and time
  */
+router.post(
+  "/",
+  authenticate,
+  authorize("CINEMA_ADMIN"),
+  validate(createShowtimeSchema),
+  createShowtimeController,
+);
 
-router.post("/",authenticate,authorize("CINEMA_ADMIN"),validate(createShowtimeSchema), createShowtimeController);
 /**
  * @swagger
- * /showtimes:
+ * /api/showtimes:
  *   get:
  *     tags:
- *        Showtime
+ *       - Showtimes
  *     summary: Get all showtimes
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
- *        in: query
+ *       - in: query
  *         name: page
  *         schema:
  *           type: integer
@@ -110,7 +130,7 @@ router.post("/",authenticate,authorize("CINEMA_ADMIN"),validate(createShowtimeSc
  *           default: 1
  *         required: false
  *         description: Page number
- *        in: query
+ *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
@@ -126,17 +146,28 @@ router.post("/",authenticate,authorize("CINEMA_ADMIN"),validate(createShowtimeSc
  *           application/json:
  *             schema:
  *               type: object
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
  */
-router.get("/",authenticate,authorize("CINEMA_ADMIN"),validate(getAllShowtimesSchema), getAllShowtimesController);
+router.get(
+  "/",
+  authenticate,
+  authorize("CINEMA_ADMIN"),
+  validate(getAllShowtimesSchema),
+  getAllShowtimesController,
+);
+
 /**
  * @swagger
- * /showtimes/{id}:
+ * /api/showtimes/{id}:
  *   get:
  *     tags:
- *        Showtime
+ *       - Showtimes
  *     summary: Get a showtime by ID
  *     parameters:
- *         in: path
+ *       - in: path
  *         name: id
  *         schema:
  *           type: string
@@ -148,13 +179,20 @@ router.get("/",authenticate,authorize("CINEMA_ADMIN"),validate(getAllShowtimesSc
  *       404:
  *         description: Showtime not found
  */
-router.get("/:id", authenticate,authorize("CINEMA_ADMIN"),validate(getShowtimeByIdSchema), getShowtimeByIdController);
+router.get(
+  "/:id",
+  authenticate,
+  authorize("CINEMA_ADMIN"),
+  validate(getShowtimeByIdSchema),
+  getShowtimeByIdController,
+);
+
 /**
  * @swagger
  * /showtimes/{id}:
  *   put:
  *     tags:
- *       - Showtime
+ *       - Showtimes
  *     summary: Update a showtime
  *     parameters:
  *       - in: path
@@ -179,13 +217,20 @@ router.get("/:id", authenticate,authorize("CINEMA_ADMIN"),validate(getShowtimeBy
  *       409:
  *         description: Showtime conflict or total capacity is less than booked seats
  */
-router.put("/:id",authenticate,authorize("CINEMA_ADMIN"), validate(updateShowtimeSchema), updateShowtimeController);
+router.put(
+  "/:id",
+  authenticate,
+  authorize("CINEMA_ADMIN"),
+  validate(updateShowtimeSchema),
+  updateShowtimeController,
+);
+
 /**
  * @swagger
  * /showtimes/{id}:
  *   delete:
  *     tags:
- *       - Showtime
+ *       - Showtimes
  *     summary: Delete a showtime
  *     parameters:
  *       - in: path
@@ -202,8 +247,20 @@ router.put("/:id",authenticate,authorize("CINEMA_ADMIN"), validate(updateShowtim
  *       409:
  *         description: Cannot delete a showtime with active bookings
  */
-router.delete("/:id",authenticate,authorize("CINEMA_ADMIN"), validate(deleteShowtimeSchema), deleteShowtimeController);
+router.delete(
+  "/:id",
+  authenticate,
+  authorize("CINEMA_ADMIN"),
+  validate(deleteShowtimeSchema),
+  deleteShowtimeController,
+);
 
-router.get("/:id/seats",authenticate,authorize("CUSTOMER"),getAvailableSeatsController);
+router.get(
+  "/:id/seats",
+  authenticate,
+  authorize("CUSTOMER"),
+  validate(getSeatsSchema),
+  getAvailableSeatsController,
+);
 
 export default router;

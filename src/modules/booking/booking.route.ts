@@ -16,6 +16,7 @@ import {
   getBookingByIdController,
   cancelBookingController,
 } from "./booking.controller";
+import { authenticate, authorize } from "../../middlewares/auth.middleware";
 
 const router = Router();
 
@@ -41,7 +42,13 @@ const router = Router();
  *       401:
  *         description: Unauthorized
  */
-router.get("/", validate(getBookingsSchema), getBookingsController);
+router.get(
+  "/",
+  authenticate,
+  authorize("CUSTOMER"),
+  validate(getBookingsSchema),
+  getBookingsController,
+);
 
 /**
  * @swagger
@@ -83,7 +90,13 @@ router.get("/", validate(getBookingsSchema), getBookingsController);
  *       409:
  *         description: One or more selected seats are already booked
  */
-router.post("/", validate(createBookingSchema), createBookingController);
+router.post(
+  "/",
+  authenticate,
+  authorize("CUSTOMER"),
+  validate(createBookingSchema),
+  createBookingController,
+);
 
 /**
  * @swagger
@@ -102,7 +115,13 @@ router.post("/", validate(createBookingSchema), createBookingController);
  *       403:
  *         description: Forbidden
  */
-router.get("/all", validate(getAllBookingsSchema), getAllBookingsController);
+router.get(
+  "/all",
+  authenticate,
+  authorize("CINEMA_ADMIN"),
+  validate(getAllBookingsSchema),
+  getAllBookingsController,
+);
 
 /**
  * @swagger
@@ -130,7 +149,13 @@ router.get("/all", validate(getAllBookingsSchema), getAllBookingsController);
  *       404:
  *         description: Booking not found
  */
-router.get("/:id", validate(getBookingByIdSchema), getBookingByIdController);
+router.get(
+  "/:id",
+  authenticate,
+  authorize("CUSTOMER"),
+  validate(getBookingByIdSchema),
+  getBookingByIdController,
+);
 
 /**
  * @swagger
@@ -164,6 +189,8 @@ router.get("/:id", validate(getBookingByIdSchema), getBookingByIdController);
  */
 router.patch(
   "/:id/cancel",
+  authenticate,
+  authorize("CUSTOMER"),
   validate(cancelBookingSchema),
   cancelBookingController,
 );

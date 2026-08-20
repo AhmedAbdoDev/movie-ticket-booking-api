@@ -6,9 +6,15 @@ import {
   GetBookingById,
   CancelBooking,
 } from "./booking.service";
+import { AuthenticatedRequest } from "../../middlewares/auth.middleware";
 
-export const getBookingsController = async (req: Request, res: Response) => {
+export const getBookingsController = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const customerId = req.user!.id;
   const result = await GetBookings(
+    customerId,
     req.query.page as number | undefined,
     req.query.limit as number | undefined,
   );
@@ -18,8 +24,12 @@ export const getBookingsController = async (req: Request, res: Response) => {
   });
 };
 
-export const createBookingController = async (req: Request, res: Response) => {
-  const result = await CreateBooking(req.body);
+export const createBookingController = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const customerId = req.user!.id;
+  const result = await CreateBooking(customerId, req.body);
 
   res.status(201).json({
     success: true,
@@ -39,8 +49,12 @@ export const getAllBookingsController = async (req: Request, res: Response) => {
   });
 };
 
-export const getBookingByIdController = async (req: Request, res: Response) => {
-  const result = await GetBookingById(req.params.id as string);
+export const getBookingByIdController = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const customerId = req.user!.id;
+  const result = await GetBookingById(customerId, req.params.id as string);
 
   res.status(200).json({
     success: true,
@@ -48,8 +62,12 @@ export const getBookingByIdController = async (req: Request, res: Response) => {
   });
 };
 
-export const cancelBookingController = async (req: Request, res: Response) => {
-  const result = await CancelBooking(req.params.id as string);
+export const cancelBookingController = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const customerId = req.user!.id;
+  const result = await CancelBooking(customerId, req.params.id as string);
 
   res.status(200).json({
     success: true,

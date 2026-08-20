@@ -10,12 +10,14 @@ import {
   releaseBookingLock,
 } from "../../utils/bookingLock";
 
-const MOCK_CUSTOMER_ID = "6a8324514631dd6dd2dc21e4";
-
-export const GetBookings = async (page?: number, limit?: number) => {
+export const GetBookings = async (
+  customerId: string,
+  page?: number,
+  limit?: number,
+) => {
   return paginate(
     bookingModel,
-    { customer: MOCK_CUSTOMER_ID },
+    { customer: customerId },
     {
       page,
       limit,
@@ -24,10 +26,13 @@ export const GetBookings = async (page?: number, limit?: number) => {
   );
 };
 
-export const CreateBooking = async (data: {
-  showtimeId: string;
-  selectedSeats: string[];
-}) => {
+export const CreateBooking = async (
+  customerId: string,
+  data: {
+    showtimeId: string;
+    selectedSeats: string[];
+  },
+) => {
   const { showtimeId, selectedSeats } = data;
   const lockAcquired = acquireBookingLock(showtimeId);
 
@@ -81,7 +86,7 @@ export const CreateBooking = async (data: {
     const totalPrice = selectedSeats.length * showtime.ticketPrice;
 
     const booking = await bookingModel.create({
-      customer: MOCK_CUSTOMER_ID,
+      customer: customerId,
       showtime: showtimeId,
       selectedSeats,
       totalPrice,
@@ -119,10 +124,10 @@ export const GetAllBookings = async (page?: number, limit?: number) => {
   );
 };
 
-export const GetBookingById = async (id: string) => {
+export const GetBookingById = async (customerId: string, id: string) => {
   const booking = await bookingModel
     .findOne({
-      customer: MOCK_CUSTOMER_ID,
+      customer: customerId,
       _id: id,
     })
     .populate({ path: "showtime", populate: { path: "movie" } });
@@ -132,9 +137,9 @@ export const GetBookingById = async (id: string) => {
   };
 };
 
-export const CancelBooking = async (id: string) => {
+export const CancelBooking = async (customerId: string, id: string) => {
   const booking = await bookingModel.findOne({
-    customer: MOCK_CUSTOMER_ID,
+    customer: customerId,
     _id: id,
   });
 
