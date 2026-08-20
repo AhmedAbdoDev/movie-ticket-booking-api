@@ -201,29 +201,71 @@ export const updateShowtime = async (id: string,data: UpdateShowtimeData,) => {
 
 
 export const deleteShowtime = async (id: string) => {
+
   const showtime = await showtimeModel.findById(id);
 
   if (!showtime) {
     throw new AppError("Showtime not found", 404);
   }
 
-  const activeBookings = await bookingModel.find({
+  const confirmedBookings = await bookingModel.findOne({
     showtime: id,
-    bookingStatus: {
-      $in: ["PENDING", "CONFIRMED"],
-    },
+    bookingStatus: "CONFIRMED"
   });
 
-  if (activeBookings.length > 0) {
+  if (confirmedBookings) {
     throw new AppError(
-      "Cannot delete a showtime that has active bookings",
-      409,
-    );
+      "Cannot delete a showtime that has confirmed bookings",409,);
   }
 
   await showtimeModel.findByIdAndDelete(id);
 
   return {
     message: "Showtime deleted successfully",
+  };
+};
+
+
+export const getAvailableSeats = async (showtimeId: string) => {
+  
+  const showtime = await showtimeModel.findById(showtimeId);
+
+  if (!showtime) {
+    throw new AppError("Showtime not found", 404);
+  }
+
+  const activeBookings = await bookingModel.find({
+    showtime: showtimeId,
+    bookingStatus: {
+      $ne: "CANCELLED",
+    },
+  });
+
+  const bookedSeats = activeBookings.flatMap(
+    (booking) => booking.selectedSeats,
+  );
+
+  const allSeats: string[] = [];
+
+  for (let i = 1; i <= showtime.totalCapacity; i++) {
+    const row = String.fromCharCode(
+      65 + Math.floor((i - 1) / 10),
+    );
+
+    const seatNumber = ((i - 1) % 10) + 1;
+
+    allSeats.push(`${row}${seatNumber}`);
+  }
+
+  const availableSeats = allSeats.filter(
+    (seat) => !bookedSeats.includes(seat),
+  );
+
+  return {
+    data: {
+      totalCapacity: showtime.totalCapacity,
+      bookedSeats,
+      availableSeats,
+    },
   };
 };

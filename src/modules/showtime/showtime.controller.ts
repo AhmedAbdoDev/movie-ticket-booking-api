@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import {createShowtime,getShowtimeById,getAllShowtimes,updateShowtime,deleteShowtime} from "./showtime.service";
+import {createShowtime,getShowtimeById,getAllShowtimes,updateShowtime,deleteShowtime,getAvailableSeats} from "./showtime.service";
 
 export const createShowtimeController = async (req: Request,res: Response) => {
   const result = await createShowtime(req.body);
@@ -51,4 +51,11 @@ export const deleteShowtimeController = async (req: Request,res: Response) => {
     message: "Showtime deleted successfully",
     data: result,
   });
+};
+
+export const getAvailableSeatsController = async (req: Request,res: Response) => {
+  const id = req.params.id as string;
+  const result = await getAvailableSeats(id);
+
+  res.status(200).json(result);
 };
