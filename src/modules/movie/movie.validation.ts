@@ -15,7 +15,6 @@ export const createMovieSchema = z.object({
     duration: z.number().min(1, "Duration must be at least 1 minute"),
     description: z.string().min(1, "Description is required").trim(),
     posterUrl: z.string().url("Must be a valid URL").trim(),
-    rating: z.number().min(0).max(10),
     status: z.enum(["NOW_SHOWING", "COMING_SOON"]),
   }),
 });
@@ -34,5 +33,6 @@ export const getMoviesSchema = z.object({
     status: z.enum(["NOW_SHOWING", "COMING_SOON"]).optional(),
     date: z.string().optional(),
     showtime: z.string().optional(),
+    sort: z.enum(["rating_asc", "rating_desc"]).optional(),
   }),
 });

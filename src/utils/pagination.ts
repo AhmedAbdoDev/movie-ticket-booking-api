@@ -5,6 +5,7 @@ interface PaginationOptions {
   page?: number;
   limit?: number;
   populate?: string | PopulateOptions | (string | PopulateOptions)[];
+  sort?: Record<string, 1 | -1> | null;
 }
 
 export const paginate = async <T>(
@@ -12,12 +13,13 @@ export const paginate = async <T>(
   filter: Record<string, unknown> = {},
   options: PaginationOptions = {},
 ) => {
-  const page = options.page && options.page > 0 ? options.page : 1;
+  const page = Number(options.page && options.page > 0 ? options.page : 1);
   const limit =
     options.limit && options.limit > 0 ? Math.min(options.limit, 100) : 10;
   const skip = (page - 1) * limit;
+  const sort = options.sort ?? { _id: -1 };
 
-  let query = model.find(filter).skip(skip).limit(limit).sort({ _id: -1 });
+  let query = model.find(filter).skip(skip).limit(limit).sort(sort);
 
   if (options.populate) query = query.populate(options.populate);
 

@@ -115,7 +115,6 @@ router.get("/:id", validate(movieIdParamsSchema), getMovieByIdController);
  *               - duration
  *               - description
  *               - posterUrl
- *               - rating
  *               - status
  *             properties:
  *               title: { type: string, example: "Inception" }
@@ -123,7 +122,6 @@ router.get("/:id", validate(movieIdParamsSchema), getMovieByIdController);
  *               duration: { type: number, example: 148 }
  *               description: { type: string, example: "A thief who steals corporate secrets..." }
  *               posterUrl: { type: string, example: "https://example.com/inception.jpg" }
- *               rating: { type: number, example: 8.8 }
  *               status: { type: string, enum: [NOW_SHOWING, COMING_SOON], example: "NOW_SHOWING" }
  *     responses:
  *       201:

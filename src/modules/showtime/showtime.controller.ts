@@ -61,8 +61,7 @@ export const deleteShowtimeController = async (req: Request, res: Response) => {
 
   res.status(200).json({
     success: true,
-    message: "Showtime deleted successfully",
-    data: result,
+    ...result,
   });
 };
 

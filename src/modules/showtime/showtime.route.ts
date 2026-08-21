@@ -154,7 +154,7 @@ router.post(
 router.get(
   "/",
   authenticate,
-  authorize("CINEMA_ADMIN"),
+  // authorize("CINEMA_ADMIN"),
   validate(getAllShowtimesSchema),
   getAllShowtimesController,
 );
@@ -258,7 +258,7 @@ router.delete(
 router.get(
   "/:id/seats",
   authenticate,
-  authorize("CUSTOMER"),
+  authorize("CUSTOMER", "CINEMA_ADMIN"),
   validate(getSeatsSchema),
   getAvailableSeatsController,
 );

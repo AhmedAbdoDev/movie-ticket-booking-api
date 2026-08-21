@@ -13,6 +13,10 @@ const options: swaggerJsdoc.Options = {
     },
     servers: [
       {
+        url: `https://movie-ticket-booking-api-production.up.railway.app/`,
+        description: "Production server",
+      },
+      {
         url: `http://localhost:${process.env.PORT}`,
         description: "Local development server",
       },

@@ -64,15 +64,34 @@ export const createShowtime = async (data: CreateShowtimeData) => {
 };
 
 export const getAllShowtimes = async (page?: number, limit?: number) => {
-  const result = await paginate(
-    showtimeModel,
-    {},
-    {
-      page,
-      limit,
-      populate: "movie",
-    },
-  );
+  const now = new Date();
+
+  const todayStart = new Date(now);
+  todayStart.setHours(0, 0, 0, 0);
+
+  const todayEnd = new Date(now);
+  todayEnd.setHours(23, 59, 59, 999);
+
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+  const filter = {
+    $or: [
+      { date: { $gt: todayEnd } },
+      {
+        date: {
+          $gte: todayStart,
+          $lte: todayEnd,
+        },
+        endTime: { $gt: currentMinutes },
+      },
+    ],
+  };
+
+  const result = await paginate(showtimeModel, filter, {
+    page,
+    limit,
+    populate: "movie",
+  });
 
   const data = result.data.map((showtime: any) => ({
     ...showtime.toObject(),
@@ -182,20 +201,35 @@ export const updateShowtime = async (id: string, data: UpdateShowtimeData) => {
 export const deleteShowtime = async (id: string) => {
   const showtime = await showtimeModel.findById(id);
 
-  if (!showtime) {
-    throw new AppError("Showtime not found", 404);
-  }
+  if (!showtime) throw new AppError("Showtime not found", 404);
 
-  const confirmedBookings = await bookingModel.findOne({
-    showtime: id,
-    bookingStatus: "CONFIRMED",
-  });
+  const now = new Date();
 
-  if (confirmedBookings) {
-    throw new AppError(
-      "Cannot delete a showtime that has confirmed bookings",
-      409,
-    );
+  const showtimeDate = new Date(showtime.date);
+  showtimeDate.setHours(0, 0, 0, 0);
+
+  const today = new Date(now);
+  today.setHours(0, 0, 0, 0);
+
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+  let isExpired = false;
+
+  if (showtimeDate < today) isExpired = true;
+  else if (showtimeDate.getTime() === today.getTime())
+    isExpired = showtime.endTime <= currentMinutes;
+
+  if (!isExpired) {
+    const confirmedBooking = await bookingModel.findOne({
+      showtime: id,
+      bookingStatus: "CONFIRMED",
+    });
+
+    if (confirmedBooking)
+      throw new AppError(
+        "Cannot delete a showtime that has confirmed bookings",
+        409,
+      );
   }
 
   await showtimeModel.findByIdAndDelete(id);

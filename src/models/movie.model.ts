@@ -7,12 +7,14 @@ const Movie = new Schema(
     duration: { type: Number, required: true, min: 1 },
     description: { type: String, required: true, trim: true },
     posterUrl: { type: String, required: true, trim: true },
-    rating: { type: Number, required: true, min: 0, max: 10 },
+    averageRating: { type: Number, default: 0, min: 0, max: 5 },
+    totalRatings: { type: Number, default: 0, min: 0 },
     status: {
       type: String,
       enum: ["NOW_SHOWING", "COMING_SOON"],
       required: true,
     },
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true, versionKey: false },
 );
