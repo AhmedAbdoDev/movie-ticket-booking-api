@@ -449,4 +449,7 @@ The production URL is documentation configuration only; deployment and infrastru
 | Abdullah Samir | Authentication & Authorization |
 | Mostafa Nasser | Showtimes |
 | Zeyad Mohammed | Movies |
-|
+
+## 👨‍💻 Author
+
+Developed with ❤️ as part of the **OSC Summer Training 2026** at **Ain Shams University, Faculty of Computer and Information Sciences**.
