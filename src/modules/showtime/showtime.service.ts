@@ -260,11 +260,7 @@ export const getAvailableSeats = async (showtimeId: string) => {
   const allSeats: string[] = [];
 
   for (let i = 1; i <= showtime.totalCapacity; i++) {
-    const row = String.fromCharCode(65 + Math.floor((i - 1) / 10));
-
-    const seatNumber = ((i - 1) % 10) + 1;
-
-    allSeats.push(`${row}${seatNumber}`);
+      allSeats.push(`seat${i}`);
   }
 
   const availableSeats = allSeats.filter((seat) => !bookedSeats.includes(seat));

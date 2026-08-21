@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { paginationSchema } from "../../utils/pagination";
 
 const movieSchema = z
   .string("Movie is required")
@@ -57,7 +58,7 @@ export const getShowtimeByIdSchema = z.object({
   }),
 });
 
-export const getAllShowtimesSchema = z.object({ query: z.object({}) });
+export const getAllShowtimesSchema = paginationSchema;
 
 export const deleteShowtimeSchema = z.object({
   params: z.object({

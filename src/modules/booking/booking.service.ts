@@ -9,6 +9,7 @@ import {
   acquireBookingLock,
   releaseBookingLock,
 } from "../../utils/bookingLock";
+import { validateSeats } from "../../utils/seatValidation";
 
 export const GetBookings = async (
   customerId: string,
@@ -33,7 +34,9 @@ export const CreateBooking = async (
     selectedSeats: string[];
   },
 ) => {
+
   const { showtimeId, selectedSeats } = data;
+
   const lockAcquired = acquireBookingLock(showtimeId);
 
   if (!lockAcquired)
@@ -43,7 +46,10 @@ export const CreateBooking = async (
     );
   try {
     const showtime = await showtimeModel.findById(showtimeId);
+    
     if (!showtime) throw new AppError("Showtime not found", 404);
+
+    validateSeats(selectedSeats, showtime.totalCapacity);
 
     const showtimeStart = combineDateAndMinutes(
       showtime.date,
