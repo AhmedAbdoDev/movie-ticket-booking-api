@@ -9,12 +9,14 @@ const app = express();
 app.use(express.json());
 connectDB();
 
+import logger from "./middlewares/logger.middleware";
 import authRouter from "./modules/auth/auth.route";
 import bookingRouter from "./modules/booking/booking.route";
 import movieRouter from "./modules/movie/movie.route";
 import showtimesRouter from "./modules/showtime/showtime.route";
 import ratingsRouter from "./modules/ratings/rating.route";
 
+app.use(logger);
 app.use("/api/auth", authRouter);
 app.use("/api/bookings", bookingRouter);
 app.use("/api/movies", movieRouter);
