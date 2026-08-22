@@ -77,7 +77,8 @@ router.get(
  *                 minItems: 1
  *                 items:
  *                   type: string
- *                 example: ["A1", "A2", "A3"]
+ *                   pattern: "^seat([1-9][0-9]*)$"
+ *                   example: ["seat1", "seat2", "seat3"]
  *     responses:
  *       201:
  *         description: Booking created successfully

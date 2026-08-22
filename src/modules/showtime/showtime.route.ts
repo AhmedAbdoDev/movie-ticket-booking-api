@@ -255,6 +255,55 @@ router.delete(
   deleteShowtimeController,
 );
 
+/**
+ * @swagger
+ * /api/showtimes/{id}/seats:
+ *   get:
+ *     summary: Get available seats for a showtime
+ *     description: Returns the total capacity, booked seats, and available seats for a specific showtime.
+ *     tags: [Showtimes]
+ *     security:
+ *        bearerAuth: []
+ *     parameters:
+ *        in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the showtime
+ *         schema:
+ *           type: string
+ *         example: "66c8a1b2c3d4e5f678901234"
+ *     responses:
+ *       200:
+ *         description: Seats retrieved successfully
+ *         content:
+ *          application/json:
+ *            schema:
+ *             type: object
+ *              properties:
+ *               data:
+ *                 type: object
+ *                 properties:
+ *                   totalCapacity:
+ *                     type: integer
+ *                     example: 50
+ *                 bookedSeats:
+ *                      type: array
+ *                 items:
+ *                     type: string
+ *                      pattern: "^seat([1-9][0-9]*)$"
+ *                      example: ["seat1", "seat5", "seat10"]
+ *                 availableSeats:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                         pattern: "^seat([1-9][0-9]*)$"
+ *                       example: ["seat2", "seat3", "seat4", "seat6"]
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Showtime not found
+ */
+
 router.get(
   "/:id/seats",
   authenticate,
