@@ -257,18 +257,16 @@ router.delete(
 
 /**
  * @swagger
- * 
  * /api/showtimes/{id}/seats:
  *   get:
- *    tags:
+ *     tags:
  *       - Showtimes
  *     summary: Get available seats for a showtime
  *     description: Returns the total capacity, booked seats, and available seats for a specific showtime.
- *     tags: [Showtimes]
  *     security:
- *        bearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
- *        in: path
+ *       - in: path
  *         name: id
  *         required: true
  *         description: ID of the showtime
@@ -279,28 +277,35 @@ router.delete(
  *       200:
  *         description: Seats retrieved successfully
  *         content:
- *          application/json:
- *            schema:
- *             type: object
- *              properties:
- *               data:
- *                 type: object
- *                 properties:
- *                   totalCapacity:
- *                     type: integer
- *                     example: 50
- *                 bookedSeats:
- *                      type: array
- *                 items:
- *                     type: string
- *                      pattern: "^seat([1-9][0-9]*)$"
- *                      example: ["seat1", "seat5", "seat10"]
- *                 availableSeats:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     totalCapacity:
+ *                       type: integer
+ *                       example: 50
+ *                     bookedSeats:
  *                       type: array
  *                       items:
  *                         type: string
  *                         pattern: "^seat([1-9][0-9]*)$"
- *                       example: ["seat2", "seat3", "seat4", "seat6"]
+ *                       example:
+ *                         - seat1
+ *                         - seat5
+ *                         - seat10
+ *                     availableSeats:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                         pattern: "^seat([1-9][0-9]*)$"
+ *                       example:
+ *                         - seat2
+ *                         - seat3
+ *                         - seat4
+ *                         - seat6
  *       401:
  *         description: Unauthorized
  *       404:
