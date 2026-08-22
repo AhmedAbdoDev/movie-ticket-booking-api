@@ -257,8 +257,11 @@ router.delete(
 
 /**
  * @swagger
+ * 
  * /api/showtimes/{id}/seats:
  *   get:
+ *    tags:
+ *       - Showtimes
  *     summary: Get available seats for a showtime
  *     description: Returns the total capacity, booked seats, and available seats for a specific showtime.
  *     tags: [Showtimes]
